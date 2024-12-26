@@ -1,0 +1,14 @@
+---
+# TODO(role): VM required for testing.
+- name: 'Global'
+  ansible.builtin.include_tasks: 'global.yml'
+
+- name: 'Local'
+  ansible.builtin.include_tasks: 'local.yml'
+  vars:
+    service: '{{ local.service }}'
+    state: '{{ local.state | default("present") }}'
+    config: '{{ local.config }}'
+  loop: '{{ debian_network_local | default([]) }}'
+  loop_control:
+    loop_var: local

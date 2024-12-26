@@ -9,6 +9,7 @@
 # * https://opensource.com/article/20/7/systemd-timers
 
 - name: 'Optimizations | auto reboot | create reboot timer service'
+  when: debian_optimizations_reboot | length > 0
   ansible.builtin.include_role:
     name: 'r_pufky.srv.systemd'
   vars:
@@ -33,9 +34,9 @@
         install:
           wanted_by: ['timers.target']
         state: 'present'
-  when: debian_optimizations_reboot | length > 0
 
 - name: 'Optimizations | auto reboot | disable reboot timer service'
+  when: debian_optimizations_reboot | length == 0
   ansible.builtin.include_role:
     name: 'r_pufky.srv.systemd'
   vars:
@@ -45,4 +46,3 @@
     systemd_timers:
       - name: 'reboot'
         state: 'absent'
-  when: debian_optimizations_reboot | length == 0

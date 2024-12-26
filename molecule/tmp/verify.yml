@@ -1,0 +1,23 @@
+---
+- name: 'Tmp | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Tmp | verify | query expected /etc/fstab'
+      ansible.builtin.copy:
+        src: 'files/fstab'
+        dest: '/etc/fstab'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+      check_mode: true
+      diff: true
+      register: _test_debian_tmp_fstab
+
+    - name: 'Tmp | verify | assert expected fstab'
+      ansible.builtin.assert:
+        that:
+          - not _test_debian_tmp_fstab.changed
+        fail_msg: >
+          /etc/fstab is not in expected format:
+          {{ _test_debian_tmp_fstab.diff }}.

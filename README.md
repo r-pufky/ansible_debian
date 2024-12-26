@@ -10,7 +10,8 @@ Fleetwide base debian OS configuration.
 [defaults](https://github.com/r-pufky/ansible_debian/blob/main/defaults/main)
 
 ## Dependencies
-N/A
+Part of the [r_pufky.srv](https://github.com/r-pufky/ansible_collection_srv)
+collection.
 
 ## Example Playbook
 Apply base OS configuration to a Debian instance. Generally this should be
@@ -80,7 +81,7 @@ debian_unattended_upgrade_origins_pattern:
   - origin: 'Debian'
     codename: '${distro_codename}-security'
     label: 'Debian-Security'
-debian_ipv6_enable: true
+debian_optimizations_ipv6_enable: true
 debian_optimizations_tcp_bbr_enable: true
 debian_optimizations_inotify_limit: 1048576
 debian_optimizations_motd: ''
@@ -90,7 +91,7 @@ debian_optimizations_reboot: '1month'
 debian_optimizations_reboot_variance: 300
 debian_optimizations_tmp_ram: '1%'
 debian_gpu_passthrough: false
-debian_accounts:  # see r_pufky.srv.users.
+debian_accounts:  # r_pufky.srv.users.
   - 'ansible'
   - 'root'
   - 'some_user'
@@ -103,25 +104,23 @@ Apply the base role
     name: 'r_pufky.srv.debian'
 ```
 
-## Unit Testing
-Test framework requires molecule and rootless podman setup.
+## Development
+Configure [environment](https://github.com/r-pufky/ansible_collection_srv/blob/main/docs/dev/environment/README.md)
 
 Run all unit tests:
 ``` bash
 molecule test --all
 ```
 
-## Issues
+### Issues
 Create a bug and provide as much information as possible.
 
 Associate pull requests with a submitted bug.
 
 ## License
 [AGPL-3.0 License](https://www.tldrlegal.com/license/gnu-affero-general-public-license-v3-agpl-3-0)
- [(direct link)](https://github.com/r-pufky/ansible_fonts/blob/main/LICENSE)
+ [(direct link)](https://github.com/r-pufky/ansible_debian/blob/main/LICENSE)
 
 ## Author Information
 PGP Fingerprint: [466EEC2B67516C7117C85CE3A0BC35D16698BAB9](https://keys.openpgp.org/vks/v1/by-fingerprint/466EEC2B67516C7117C85CE3A0BC35D16698BAB9)
 | [github gist](https://gist.github.com/r-pufky/a8df36977c55b5bb20829267c4c49d22)
-
-

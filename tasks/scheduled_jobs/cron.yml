@@ -20,6 +20,7 @@
 # * https://opensource.com/article/20/7/systemd-timers
 
 - name: 'Cron | DEPRECATED | actively migrate to systemd timer services'
+  when: not debian_cron_warning_disable
   ansible.builtin.debug:
     msg: |
       Cronjobs should actively be migrated to modern job scheduling if able.
@@ -33,9 +34,9 @@
 
       https://opensource.com/article/20/7/systemd-timers
       https://wiki.archlinux.org/title/Systemd/Timers#As_a_cron_replacement
-  when: not debian_cron_warning_disable
 
 - name: 'Cron | set standard scheduling sync'
+  when: config.special_time is not defined
   ansible.builtin.cron:
     name: 'debian custom cron {{ job_name }}'
     month: '{{ config.month | default("*") }}'
@@ -47,9 +48,9 @@
     job: '{{ config.job | default(omit) }}'
     cron_file: 'debian_custom_cron_{{ job_name }}'
     state: '{{ config.state | default("present") }}'
-  when: config.special_time is not defined
 
 - name: 'Cron | set special time sync'
+  when: config.special_time is defined
   ansible.builtin.cron:
     name: 'debian custom cron {{ job_name }}'
     special_time: '{{ config.special_time }}'
@@ -57,4 +58,3 @@
     job: '{{ config.job | default(omit) }}'
     cron_file: 'debian_custom_cron_{{ job_name }}'
     state: '{{ config.state | default("present") }}'
-  when: config.special_time is defined

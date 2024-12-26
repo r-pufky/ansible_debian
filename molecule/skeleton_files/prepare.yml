@@ -7,7 +7,6 @@
     - name: 'Skeleton files | prepare | base packages for bare-metal equivalency'
       ansible.builtin.apt:
         name:
-          - 'python3-debian'  # deb-822 apt source support.
-          - 'locales'  # locales support.
+          - 'rsync'  # ansible.builtin.synchronize (rsync)
         update_cache: true
         state: 'present'

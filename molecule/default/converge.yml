@@ -5,8 +5,8 @@
 # * https://github.com/ansible/molecule/issues/816
 
 - name: 'Default | converge'
-  hosts: all
-  gather_facts: true
+  hosts: 'all'
+  gather_facts: true  # ansible_virtualization_role
   tags: 'molecule-idempotence-notest'
   tasks:
     - name: 'Default | converge | apply debian role all defaults'

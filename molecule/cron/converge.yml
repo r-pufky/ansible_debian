@@ -1,22 +1,33 @@
 ---
-# Idempotent testing disabled as specific commands will never be idempotent.
+# Idempotent testing disabled as specific commands will never be idempotent:
+# * Cron jobs are set only once.
 #
 # Reference:
 # * https://github.com/ansible/molecule/issues/816
 
+# Use exact setup from main.yml.
 - name: 'Cron | converge'
-  hosts: all
-  gather_facts: true
+  hosts: 'all'
+  gather_facts: false
   tags: 'molecule-idempotence-notest'
   tasks:
-    - name: 'Cron | converge | apply debian role add cronjobs'
+    - name: 'Cron | converge | run scheduled_jobs/cron.yml'
       ansible.builtin.include_role:
         name: 'r_pufky.srv.debian'
+        tasks_from: 'scheduled_jobs/cron.yml'
+      vars:
+        job_name: '{{ item.key }}'
+        config: '{{ item.value }}'
+      loop: '{{ debian_cron | default({}) | dict2items }}'
 
-    - name: 'Cron | converge | apply debian role remove cronjob '
+    - name: 'Cron | converge | run scheduled_jobs/cron.yml (remove cronjob)'
       ansible.builtin.include_role:
         name: 'r_pufky.srv.debian'
+        tasks_from: 'scheduled_jobs/cron.yml'
       vars:
         debian_cron:
           cron_absent:
             state: 'absent'
+        job_name: '{{ item.key }}'
+        config: '{{ item.value }}'
+      loop: '{{ debian_cron | default({}) | dict2items }}'

@@ -1,5 +1,4 @@
 ---
-# yamllint disable rule:line-length
 dependency:
   name: 'galaxy'
 driver:
@@ -16,19 +15,15 @@ provisioner:
     group_vars:
       all:
         systemd_testing_enable: true
-        users_user_test_lockdown:
-          name: 'test_lockdown'
-          uid: 810
-        debian_accounts:
-          - 'test_lockdown'
+        debian_testing_enable: true
 platforms:
-  - name: 'debian-12'
+  - name: 'debian-12-debian'
     image: 'ghcr.io/hifis-net/debian-systemd:12'
     systemd: 'always'
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     capabilities:
-      - 'SYS_ADMIN'
+      - 'SYS_ADMIN'  # sysctl
     command: '/lib/systemd/systemd'
     pre_build_image: true
     privileged: true  # sysctl, ulimit

@@ -1,0 +1,57 @@
+---
+# yamllint disable rule:line-length
+###############################################################################
+# Firmware upgrades
+###############################################################################
+# Upgrade any firmware on system and reboot.
+#
+# Manual firmware update (requires reboot if changes):
+#
+#   fwupdmgr get-devices
+#   fwupdmgr refresh
+#   fwupdmgr get-updates
+#   fwupdmgr update
+#
+# Reference:
+# * https://wiki.archlinux.org/title/Fwupd
+# * https://manpages.debian.org/unstable/fwupd/fwupdmgr.1.en.html
+
+- name: 'Firmware | install packages'
+  ansible.builtin.apt:
+    name: '{{ item }}'
+    state: '{{ debian_role_package_state }}'
+  loop:
+    - '{{ debian_role_firmware_packages }}'
+    - '{{ debian_optimizations_firmware_packages }}'
+
+- name: 'Firmware | remove packages'
+  ansible.builtin.apt:
+    name: '{{ debian_optimizations_firmware_packages_absent }}'
+    state: 'absent'
+
+- name: 'Firmware | update metadata'
+  ansible.builtin.command: '/usr/bin/fwupdmgr refresh --assume-yes'
+  changed_when: false
+
+- name: 'Firmware | check for updates'
+  ansible.builtin.command: '/usr/bin/fwupdmgr get-updates --json --assume-yes'
+  register: _debian_firmware_check
+  changed_when: false
+
+# TODO(role): VM required for testing.
+- name: 'Firmware | apply updates'
+  when: _debian_firmware_check_json.Devices | length > 0
+  ansible.builtin.command: '/usr/bin/fwupdmgr update --offline --no-reboot-check --assume-yes'
+  register: _debian_firmware_reboot
+  become: true
+  vars:
+    _debian_firmware_check_json: '{{ _debian_firmware_check.stdout | from_json }}'
+  changed_when: _debian_firmware_check_json.Devices | length > 0
+
+- name: 'Firmware | reboot'
+  when: _debian_firmware_reboot.rc == 0
+  ansible.builtin.reboot:
+    msg: |
+      System reboot to apply firmware updates. This will take a few minutes.
+  async: '{{ debian_timeout | default(debian_role_timeout) }}'
+  poll: 5

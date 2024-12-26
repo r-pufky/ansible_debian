@@ -12,63 +12,63 @@
 # * https://github.com/ansible/ansible/blob/devel/lib/ansible/module_utils/facts/virtual/linux.py
 
 - name: 'Apt | packages | install role packages'
+  when: debian_role_packages
   ansible.builtin.apt:
     name: '{{ debian_role_packages }}'
     state: '{{ debian_role_package_state }}'
-  when: debian_role_packages
 
 - name: 'Apt | packages | install core packages'
+  when: debian_core_packages
   ansible.builtin.apt:
     name: '{{ debian_core_packages }}'
     state: '{{ debian_role_package_state }}'
-  when: debian_core_packages
 
 - name: 'Apt | packages | install container packages'
-  ansible.builtin.apt:
-    name: '{{ debian_container_packages }}'
-    state: '{{ debian_role_package_state }}'
   when: >
     debian_container_packages and
     ansible_virtualization_role == 'guest'
+  ansible.builtin.apt:
+    name: '{{ debian_container_packages }}'
+    state: '{{ debian_role_package_state }}'
 
 - name: 'Apt | packages | install vm packages'
-  ansible.builtin.apt:
-    name: '{{ debian_vm_packages }}'
-    state: '{{ debian_role_package_state }}'
   when: >
     debian_vm_packages and
     ansible_virtualization_role == 'host'
+  ansible.builtin.apt:
+    name: '{{ debian_vm_packages }}'
+    state: '{{ debian_role_package_state }}'
 
 - name: 'Apt | packages | install additional packages'
+  when: debian_packages
   ansible.builtin.apt:
     name: '{{ debian_packages }}'
     state: '{{ debian_role_package_state }}'
-  when: debian_packages
 
 - name: 'Apt | packages | remove core packages'
+  when: debian_core_packages_absent
   ansible.builtin.apt:
     name: '{{ debian_core_packages_absent }}'
     state: 'absent'
-  when: debian_core_packages_absent
 
 - name: 'Apt | packages | remove container packages'
-  ansible.builtin.apt:
-    name: '{{ debian_container_packages_absent }}'
-    state: 'absent'
   when: >
     debian_container_packages_absent and
     ansible_virtualization_role == 'guest'
+  ansible.builtin.apt:
+    name: '{{ debian_container_packages_absent }}'
+    state: 'absent'
 
 - name: 'Apt | packages | remove vm packages'
-  ansible.builtin.apt:
-    name: '{{ debian_vm_packages_absent }}'
-    state: 'absent'
   when: >
     debian_vm_packages_absent and
     ansible_virtualization_role == 'role'
+  ansible.builtin.apt:
+    name: '{{ debian_vm_packages_absent }}'
+    state: 'absent'
 
 - name: 'Apt | packages | remove additional packages'
+  when: debian_packages_absent
   ansible.builtin.apt:
     name: '{{ debian_packages_absent }}'
     state: 'absent'
-  when: debian_packages_absent

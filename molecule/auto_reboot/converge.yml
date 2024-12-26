@@ -1,0 +1,9 @@
+---
+- name: 'Auto reboot | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Auto reboot | converge | run optimizations/auto_reboot.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/auto_reboot.yml'

@@ -1,0 +1,10 @@
+---
+# yamllint disable rule:line-length
+- name: 'Reboot notifications | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Reboot notifications | converge | run optimizations/reboot_notifications.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/reboot_notifications.yml'

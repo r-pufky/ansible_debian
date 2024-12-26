@@ -1,0 +1,44 @@
+---
+###############################################################################
+# Manage /etc/resolv.conf
+###############################################################################
+# Basic management of /etc/resolv.conf. Sets config and optionally makes it
+# immutable. Other packages should manage this file as part of their service.
+#
+# Reference:
+# * https://wiki.debian.org/resolv.conf
+
+- name: 'Network | /etc/resolv.conf | set mutable'
+  when: debian_network_resolv | length > 0
+  ansible.builtin.file:
+    path: '/etc/resolv.conf'
+    attributes: '-i'
+  become: true
+  register: debian_resolv_attr
+  changed_when: '"i" not in debian_resolv_attr.diff.before.attributes'
+
+- name: 'Network | /etc/resolv.conf | set'
+  when: >
+    debian_network_resolv | length > 0 and
+    not debian_testing_enable
+  notify:
+    - 'Handlers | ifreload'
+    - 'Handlers | restart networking'
+  ansible.builtin.template:
+    src: 'network/resolv.conf.j2'
+    dest: '/etc/resolv.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+    force: true
+
+- name: 'Network | /etc/resolv.conf | set immutable'
+  when: >
+    debian_network_resolv_force and
+    not debian_testing_enable
+  ansible.builtin.file:
+    path: '/etc/resolv.conf'
+    attributes: '+i'
+  become: true
+  register: debian_resolv_attr
+  changed_when: '"i" not in debian_resolv_attr.diff.before.attributes'

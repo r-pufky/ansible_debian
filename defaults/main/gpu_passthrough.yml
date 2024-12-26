@@ -31,6 +31,7 @@ debian_gpu_passthrough_mode: 'guest'
 # Values:
 #   nvidia: nvidia-based card supported in nivida-driver packages
 #      amd: amd-based card supported in mesa-vulkan packages
+#    intel: intel-based iGPU support
 #
 # Default: 'nvidia'.
 debian_gpu_brand: 'nvidia'

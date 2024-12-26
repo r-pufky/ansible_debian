@@ -1,5 +1,4 @@
 ---
-# yamllint disable rule:line-length
 dependency:
   name: 'galaxy'
 driver:
@@ -15,18 +14,15 @@ provisioner:
   inventory:
     group_vars:
       all:
-        systemd_testing_enable: true
+        debian_skeleton_files: 'files/'
 platforms:
-  - name: 'debian-12'
+  - name: 'debian-12-skeleton_files'
     image: 'ghcr.io/hifis-net/debian-systemd:12'
     systemd: 'always'
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    capabilities:
-      - 'SYS_ADMIN'
     command: '/lib/systemd/systemd'
     pre_build_image: true
-    privileged: true  # sysctl, ulimit
 verifier:
   name: 'ansible'
 lint: |

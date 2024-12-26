@@ -22,7 +22,7 @@ APT::Periodic::MinAge "{{ debian_unattended_min_age }}";
 APT::Periodic::MaxSize "{{ debian_unattended_max_size }}";
 
 // Do "apt-get update" automatically every n-days (0=disable)
-APT::Periodic::Update-Package-Lists "{{ debian_unattended_update_package_list}}";
+APT::Periodic::Update-Package-Lists "{{ debian_unattended_update_package_list }}";
 
 // Do "apt-get upgrade --download-only" every n-days (0=disable)
 APT::Periodic::Download-Upgradeable-Packages "{{ debian_unattended_download_upgradeable_packages }}";

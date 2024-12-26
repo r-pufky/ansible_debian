@@ -1,0 +1,9 @@
+---
+- name: 'Tmp | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Tmp | converge | run optimizations/tmp.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/tmp.yml'

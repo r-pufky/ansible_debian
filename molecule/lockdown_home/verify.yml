@@ -1,0 +1,18 @@
+---
+- name: 'Lockdown home | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Lockdown home | verify | query home lockdown'
+      ansible.builtin.stat:
+        path: '/home/test_lockdown/.bashrc'
+      register: _test_debian_lockdown
+
+    - name: 'Lockdown home | verify | assert home lockdown'
+      ansible.builtin.assert:
+        that:
+          - _test_debian_lockdown.stat.exists
+          - _test_debian_lockdown.stat.gr_name == 'test_lockdown'
+          - _test_debian_lockdown.stat.pw_name == 'test_lockdown'
+          - _test_debian_lockdown.stat.mode == '0600'
+        fail_msg: '/home not locked down. Expected(D: go-rwx, F: go-rwx).'

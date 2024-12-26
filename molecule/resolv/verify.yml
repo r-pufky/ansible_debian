@@ -1,0 +1,29 @@
+---
+# /etc/resolv.conf is set to current contents and immutable.
+- name: 'Resolv | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Resolv | verify | stat /etc/resolv.conf'
+      ansible.builtin.stat:
+        path: '/etc/resolv.conf'
+      register: _test_debian_resolv
+
+    - name: 'Resolv | verify | get /etc/resolv.conf'
+      ansible.builtin.slurp:
+        path: '/etc/resolv.conf'
+      register: _test_debian_resolv_file
+
+    - name: 'Resolv | verify | assert populated'
+      ansible.builtin.assert:
+        that:
+          - '_test_debian_resolv_file.content | length > 0'
+        fail_msg: '/etc/resolv.conf should not be empty.'
+
+    # Containers cannot set resolv.conf immutable.
+    - name: 'Resolv | verify | assert immutable'
+      when: not debian_testing_enable
+      ansible.builtin.assert:
+        that:
+          - '"immutable" in _test_debian_resolv.stat.attributes'
+        fail_msg: '/etc/resolv.conf should be immutable.'

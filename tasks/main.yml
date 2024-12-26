@@ -6,6 +6,13 @@
 - name: 'Apt | unattended'
   ansible.builtin.import_tasks: 'apt/unattended.yml'
 
+- name: 'Optimizations | firmware'
+  when: >
+    debian_optimizations_firmware_update_enable and
+    ansible_virtualization_role != 'guest' and
+    not debian_testing_enable
+  ansible.builtin.import_tasks: 'optimizations/firmware.yml'
+
 - name: 'SSH'
   ansible.builtin.include_role:
     name: 'r_pufky.srv.ssh'
@@ -15,11 +22,13 @@
 - name: 'Timezone'
   ansible.builtin.import_tasks: 'timezone.yml'
 - name: 'Optimizations | TCP BBR'
-  ansible.builtin.import_tasks: 'optimizations/tcp_bbr.yml'
   when: debian_optimizations_tcp_bbr_enable
+  ansible.builtin.import_tasks: 'optimizations/tcp_bbr.yml'
 
-- name: 'Network | IPv6'
-  ansible.builtin.import_tasks: 'network/ip_v6.yml'
+- name: 'Optimizations | IPv6'
+  ansible.builtin.import_tasks: 'optimizations/ip_v6.yml'
+- name: 'Network | resolv'
+  ansible.builtin.import_tasks: 'network/resolv.yml'
 
 - name: 'UFW'
   ansible.builtin.import_role:
@@ -37,12 +46,12 @@
     name: 'r_pufky.srv.journald'
 
 - name: 'Optimizations | inotify limit'
-  ansible.builtin.import_tasks: 'optimizations/inotify_limit.yml'
   when: debian_optimizations_inotify_limit >= 0
+  ansible.builtin.import_tasks: 'optimizations/inotify_limit.yml'
 
 - name: 'Skeleton files'
-  ansible.builtin.import_tasks: 'skeleton_files.yml'
   when: debian_skeleton_files | length > 0
+  ansible.builtin.import_tasks: 'skeleton_files.yml'
 
 - name: 'Optimizations | reboot notifications'
   ansible.builtin.import_tasks: 'optimizations/reboot_notifications.yml'
@@ -59,19 +68,19 @@
     loop_var: user
 
 - name: 'Optimizations | lockdown home'
-  ansible.builtin.import_tasks: 'optimizations/lockdown_home.yml'
   when: debian_optimizations_lockdown_home
+  ansible.builtin.import_tasks: 'optimizations/lockdown_home.yml'
 
 - name: 'Optimizations | tmp'
-  ansible.builtin.import_tasks: 'optimizations/tmp.yml'
   when: debian_optimizations_tmp_ram
+  ansible.builtin.import_tasks: 'optimizations/tmp.yml'
 
 - name: 'GPU passthrough'
-  ansible.builtin.import_tasks: 'gpu_passthrough/main.yml'
   when: debian_gpu_passthrough
+  ansible.builtin.import_tasks: 'gpu_passthrough/main.yml'
 
 - name: 'Network | interfaces'
-  ansible.builtin.import_tasks: 'network/interfaces.yml'
+  ansible.builtin.import_tasks: 'network/interfaces/main.yml'
 
 - name: 'Scheduled jobs | Cron'
   ansible.builtin.include_tasks: 'scheduled_jobs/cron.yml'
@@ -81,14 +90,14 @@
   loop: '{{ debian_cron | default({}) | dict2items }}'
 
 - name: 'Scheduled jobs | Systemd'
+  when: >
+    debian_systemd_services | length > 0 or
+    debian_systemd_timers | length > 0
   ansible.builtin.include_role:
     name: 'r_pufky.srv.systemd'
   vars:
     systemd_services: '{{ debian_systemd_services }}'
     systemd_timers: '{{ debian_systemd_timers }}'
-  when: >
-    debian_systemd_services | length > 0 or
-    debian_systemd_timers | length > 0
 
 - name: 'Flush handlers'
   ansible.builtin.meta: 'flush_handlers'

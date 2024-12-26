@@ -1,0 +1,25 @@
+---
+# Idempotent testing disabled as specific commands will never be idempotent:
+# * User account is only created once.
+#
+# Reference:
+# * https://github.com/ansible/molecule/issues/816
+
+# Use exact setup from main.yml.
+- name: 'Locales | converge'
+  hosts: 'all'
+  gather_facts: false
+  tags: 'molecule-idempotence-notest'
+  tasks:
+    - name: 'Accounts'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.users'
+        tasks_from: 'user.yml'
+      loop: '{{ debian_accounts | default([]) }}'
+      loop_control:
+        loop_var: user
+
+    - name: 'Locales | converge | run optimizations/lockdown_home.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/lockdown_home.yml'

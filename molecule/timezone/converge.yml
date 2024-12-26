@@ -1,0 +1,9 @@
+---
+- name: 'Timezone | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Timezone | converge | run timezone.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'timezone.yml'

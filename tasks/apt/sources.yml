@@ -35,17 +35,17 @@
   ansible.builtin.apt:
     update_cache: true
 
-- name: 'Apt | sources | upgrade packages (may take a while)'
+- name: 'Apt | sources | distribution upgrade in progress (may take a while)'
+  when: debian_apt_dist_upgrade_enable
   ansible.builtin.debug:
     msg: |
-      Packages are being upgraded. This will take a few minutes.
-  when: debian_apt_dist_upgrade_enable
+      Distribution is being upgraded. This will take a few minutes.
 
 - name: 'Apt | sources | upgrade distribution packages'
+  when: debian_apt_dist_upgrade_enable
   ansible.builtin.apt:
     upgrade: 'dist'
     state: '{{ debian_role_package_state }}'
     update_cache: true
-  async: 600
+  async: '{{ debian_timeout | default(debian_role_timeout) }}'
   poll: 5
-  when: debian_apt_dist_upgrade_enable

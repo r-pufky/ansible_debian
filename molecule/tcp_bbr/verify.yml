@@ -1,0 +1,14 @@
+---
+- name: 'TCP BBR | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'TCP BBR | verify | assert TCP BBR enabled'
+      ansible.builtin.lineinfile:
+        path: '/etc/sysctl.d/10-kernel-tcp-bbr.conf'
+        regex: 'tcp_congestion_control'
+        state: 'absent'
+      changed_when: false
+      check_mode: true
+      register: _test_debian_tcp_bbr
+      failed_when: _test_debian_tcp_bbr.found == 0

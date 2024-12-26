@@ -1,0 +1,14 @@
+---
+- name: 'IPv6 | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'IPv6 | verify | assert IPv6 disabled'
+      ansible.builtin.lineinfile:
+        path: '/etc/sysctl.conf'
+        regex: 'net.ipv6.conf.all.disable_ipv6=1'
+        state: 'absent'
+      changed_when: false
+      check_mode: true
+      register: _test_debian_tcp_bbr
+      failed_when: _test_debian_tcp_bbr.found == 0

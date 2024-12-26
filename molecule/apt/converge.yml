@@ -1,0 +1,26 @@
+---
+# Idempotent testing disabled as specific commands will never be idempotent:
+# * Apt cache updates are not idempotent.
+#
+# Reference:
+# * https://github.com/ansible/molecule/issues/816
+
+- name: 'Apt | converge'
+  hosts: 'all'
+  gather_facts: true  # ansible_vistualization_*
+  tags: 'molecule-idempotence-notest'
+  tasks:
+    - name: 'Apt | converge | run apt/sources.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'apt/sources.yml'
+
+    - name: 'Apt | converge | run apt/packages.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'apt/packages.yml'
+
+    - name: 'Apt | converge | run apt/unattended.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'apt/unattended.yml'

@@ -1,0 +1,14 @@
+---
+- name: 'Timezone | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Timezone | verify | assert timezone set'
+      ansible.builtin.lineinfile:
+        path: '/etc/timezone'
+        regex: 'Etc/UTC'
+        state: 'absent'
+      changed_when: false
+      check_mode: true
+      register: _test_debian_timezone
+      failed_when: _test_debian_timezone.found == 0

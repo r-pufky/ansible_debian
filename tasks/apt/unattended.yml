@@ -15,25 +15,25 @@
     state: '{{ debian_role_package_state }}'
 
 - name: 'Apt | unattended | install AC power management detection'
+  when: debian_unattended_ac_only_enable
   ansible.builtin.apt:
     name: '{{ debian_role_ac_power_packages }}'
     state: '{{ debian_role_package_state }}'
-  when: debian_unattended_ac_only_enable
 
 - name: 'Apt | unattended | configure auto upgrades'
+  notify: 'Handlers | restart unattended-upgrades'
   ansible.builtin.template:
     src: 'unattended/20auto-upgrades.j2'
     dest: '/etc/apt/apt.conf.d/20auto-upgrades'
     owner: 'root'
     group: 'root'
     mode: '0644'
-  notify: 'Handlers | restart unattended-upgrades'
 
 - name: 'Apt | unattended | configure unattended-upgrades'
+  notify: 'Handlers | restart unattended-upgrades'
   ansible.builtin.template:
-    src: 'unattended/50unattended-upgrades.j2'
-    dest: '/etc/apt/apt.conf.d/50unattended-upgrades'
+    src: 'unattended/52unattended-upgrades-local.j2'
+    dest: '/etc/apt/apt.conf.d/52unattended-upgrades-local'
     owner: 'root'
     group: 'root'
     mode: '0644'
-  notify: 'Handlers | restart unattended-upgrades'

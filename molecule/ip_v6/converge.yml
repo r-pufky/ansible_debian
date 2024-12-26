@@ -1,0 +1,9 @@
+---
+- name: 'IPv6 | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'IPv6 | converge | run optimizations/ip_v6.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/ip_v6.yml'

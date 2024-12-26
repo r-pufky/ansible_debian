@@ -1,0 +1,15 @@
+---
+- name: 'MOTD | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'MOTD | verify | query MOTD'
+      ansible.builtin.slurp:
+        path: '/etc/motd'
+      register: _test_debian_motd
+
+    - name: 'MOTD | verify | assert MOTD empty'
+      ansible.builtin.assert:
+        that:
+          - _test_debian_motd.content | b64decode == ''
+        fail_msg: '/etc/motd invalid (expected "").'

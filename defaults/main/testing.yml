@@ -1,0 +1,18 @@
+---
+###############################################################################
+# Debian Testing
+###############################################################################
+# Options exposed specifically for unit testing without hardware-level
+# interactions that are impossible in containers. These are not needed in
+# normal operation.
+
+# Enable testing.
+#
+# This will disable hardware-level interactions are that impossible in
+# containers (kernel, sysctl, networking, firmwar, etc).
+#
+# TODO(role): migrate testing to use virtual machines instead of containers
+#     and remove testing variable unless API injection is required.
+#
+# Default: False.
+debian_testing_enable: false

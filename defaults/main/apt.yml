@@ -395,7 +395,7 @@ debian_unattended_remove_new_unused_dependencies: true
 # Equivalent to 'apt get autoremove'.
 #
 # Default: True.
-debian_unattended_remove_unused_dependencies: false
+debian_unattended_remove_unused_dependencies: true
 
 # Automatically reboot if required? Default: False.
 debian_unattended_automatic_reboot: false

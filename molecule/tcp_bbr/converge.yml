@@ -1,0 +1,9 @@
+---
+- name: 'TCP BBR | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'TCP BBR | converge | run optimizations/tcp_bbr.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/tcp_bbr.yml'

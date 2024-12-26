@@ -1,0 +1,9 @@
+---
+- name: 'MOTD | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'MOTD | converge | run optimizations/motd.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'optimizations/motd.yml'

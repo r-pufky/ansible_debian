@@ -1,25 +1,4 @@
 ---
-# yamllint disable rule:line-length
-# Encapsulated roles are just verified to execute without error (tested in that
-# role). Only test new tasks within this role.
-# - name: 'Cron | verify | skeleton files'
-#   hosts: 'all'
-#   gather_facts: false
-#   tasks:
-#     - name: 'Cron | verify | skeleton files | query default skel files'
-#       ansible.builtin.find:
-#         paths: '/etc/skel'
-#         recurse: false
-#         hidden: true
-#         file_type: 'file'
-#       register: _test_debian_skel
-#
-#     - name: 'Cron | verify | skeleton files | assert default skel files'
-#       ansible.builtin.assert:
-#         that:
-#           - _test_debian_skel.files | length == 3
-#         fail_msg: '/etc/skel/{.bash_logout,.bashrc,.profile} not found.'
-
 - name: 'Cron | verify'
   hosts: 'all'
   gather_facts: false
@@ -51,8 +30,10 @@
       register: _test_debian_cron
       failed_when: '"found" in _test_debian_cron'
 
-    - name: 'Cron | verify | cron | assert only debian_custom_cron_cron_present'
+    - name: 'Cron | verify | cron | assert debian_custom_cron_cron_present'
       ansible.builtin.assert:
         that:
           - _test_debian_cron_list.files | length == 2
-        fail_msg: '/etc/cron.d should contain only e2scrub_all, debian_custom_cron_cron_present.'
+        fail_msg: >
+          /etc/cron.d should contain only e2scrub_all,
+          debian_custom_cron_cron_present.

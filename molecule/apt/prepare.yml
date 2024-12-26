@@ -1,0 +1,11 @@
+---
+- name: 'Apt | prepare'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Apt | prepare | base packages for bare-metal equivalency'
+      ansible.builtin.apt:
+        name:
+          - 'python3-debian'  # ansible.builtin.deb822_repository
+        update_cache: true
+        state: 'present'

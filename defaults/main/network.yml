@@ -6,18 +6,67 @@
 # set in the LXC container configuration. Changing from DHCP (set in PVE) to
 # static (set in the LXC container) will cause network connection failures.
 
-# Enable IPv6 support via sysctl?
+# Set temporary custom /etc/resolv.conf.
 #
-# SLAAC will block debian boots for up to 5 minutes waiting for a non-existent
-# stateless DHCP v6 server.
+# Enables setting custom resolvers until other processes overwrite settings.
+# Useful for initial configuration.
+#
+# Default: '' (un-managed).
+#
+# Reference:
+# * https://wiki.debian.org/resolv.conf
+debian_network_resolv: ''
+
+# Force custom /etc/resolv.conf?
+#
+# Sets resolv.conf immutable to prevent any additional changes outside of role.
 #
 # Default: False.
 #
 # Reference:
-# * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=947234
-debian_ipv6_enable: false
+# * https://wiki.debian.org/resolv.conf
+debian_network_resolv_force: false
 
 # Network device definition using /etc/network/interfaces format.
 #
+# Explicitly include 'source /etc/network/interfaces.d/*' if using
+# debian_network_local and debian_network.
+#
+# Proxmox must define all network interfaces here in order for the WebUI and
+# SDN to detect settings.
+#
 # Default: '' (un-managed).
 debian_network: ''
+
+###############################################################################
+# Network (Local Configuration)
+###############################################################################
+# Configure network per interface (interfaces.d).
+#
+# debian_network_local:
+#     list of dict - network local configuration.
+#   - service: str - name of local interface/service config
+#           (/etc/network/interfaces.d/{NAME}).
+#     state: str - whether config should be managed or removed
+#         Values:
+#           present: manage configuration
+#            absent: remove configuration
+#         Default: 'present'.
+#     config: str - network interface config
+#
+# debian_network_local:
+#   - service: 'lo'
+#     state: 'present'
+#     config: |
+#       auto lo
+#       iface lo inet loopback
+#       # The loopback network interface
+#   - service: 'eth10'
+#     state: 'absent'
+#           if_empty: false
+#
+# Default: [] (un-managed).
+#
+# Reference:
+# * https://manpages.debian.org/bookworm/ifupdown2/interfaces.5.en.html
+debian_network_local: []

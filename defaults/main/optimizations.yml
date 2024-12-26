@@ -37,6 +37,28 @@ debian_optimizations_motd_extended_reboot: 21
 # Lockdown all home directories (remove all group/other perms). Default: True.
 debian_optimizations_lockdown_home: true
 
+# Enable IPv6 support via sysctl?
+#
+# SLAAC will block debian boots for up to 5 minutes waiting for a non-existent
+# stateless DHCP v6 server.
+#
+# Default: False.
+#
+# Reference:
+# * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=947234
+debian_optimizations_ipv6_enable: false
+
+# Use 'systemctl restart networking'?
+#
+# Role applies networking changes via 'ifreload -a' without restarting the
+# service. This will enable service restarting which may cause network
+# interruptions but potentially flush/fix major network changes.
+#
+# PVE should reboot instead of using this method.
+#
+# Default: False.
+debian_optimizations_systemctl_network_restart: false
+
 ###############################################################################
 # System Reboot Behaviors
 ###############################################################################
@@ -73,3 +95,28 @@ debian_optimizations_reboot_variance: 300
 #
 # Default: '1%' (1% of system RAM).
 debian_optimizations_tmp_ram: '1%'
+
+###############################################################################
+# Firmware
+###############################################################################
+# Enable firmware updates for system (ignored for containers). Reboots system
+# if firmware updates are applied.
+#
+# Containers are detected via ansible_virtualization_role.
+#
+# Default: False.
+debian_optimizations_firmware_update_enable: false
+
+# System firmware packages to install.
+#
+# debian_optimizations_firmware_update_enable must be enabled.
+#
+# Default: [].
+debian_optimizations_firmware_packages: []
+
+# System firmware packages to remove.
+#
+# debian_optimizations_firmware_update_enable must be enabled.
+#
+# Default: [].
+debian_optimizations_firmware_packages_absent: []

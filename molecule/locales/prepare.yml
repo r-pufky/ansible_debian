@@ -1,0 +1,11 @@
+---
+- name: 'Locales | prepare'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Locales | prepare | base packages for bare-metal equivalency'
+      ansible.builtin.apt:
+        name:
+          - 'locales'  # community.general.locale_gen (locales)
+        update_cache: true
+        state: 'present'

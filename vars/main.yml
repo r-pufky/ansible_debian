@@ -1,6 +1,6 @@
 ---
 ###############################################################################
-# Default Debian Package Dependencies
+# Debian Role Options
 ###############################################################################
 
 # Last time debian options were validated against a default configuration.
@@ -12,17 +12,24 @@ debian_role_package_state: 'latest'
 
 # Default debian packages required for operation.
 debian_role_packages:
-  - 'rsync'  # ansible.posix.synchronize.
+  - 'rsync'  # ansible.posix.synchronize (skeleton files)
 
 # Default packages for unattended upgrades.
 debian_role_unattended_upgrades_packages:
-  - 'apt-listchanges'  # installed by default.
-  - 'unattended-upgrades'  # installed by default.
-  - 'apt-config-auto-update'  # config automation support.
+  - 'apt-listchanges'  # installed by default
+  - 'unattended-upgrades'  # installed by default
+  - 'apt-config-auto-update'  # config automation support
 
 # Default packages to enable unattended upgrades on AC power.
 debian_role_ac_power_packages:
   - 'powermgmt-base'
 
+# Default packages to manage system firmware
+debian_role_firmware_packages:
+  - 'fwupd'
+
 # Default tmpfs location.
 debian_role_tmpfs: '/tmp'
+
+# Default timeout for long actions (seconds).
+debian_role_timeout: 600

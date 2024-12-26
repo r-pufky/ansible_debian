@@ -1,0 +1,9 @@
+---
+- name: 'Locales | converge'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Locales | converge | run locales.yml'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.debian'
+        tasks_from: 'locales.yml'

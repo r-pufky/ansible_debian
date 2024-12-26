@@ -1,0 +1,15 @@
+---
+- name: 'Reboot notifications | verify '
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Reboot notifications | verify | query reboot notification'
+      ansible.builtin.stat:
+        path: '/etc/update-motd.d/98-reboot-required'
+      register: _test_debian_reboot_notification
+
+    - name: 'Reboot notifications | verify | assert reboot notification'
+      ansible.builtin.assert:
+        that:
+          - _test_debian_reboot_notification.stat.exists
+        fail_msg: '/etc/update-motd.d/98-reboot-required should exist.'
